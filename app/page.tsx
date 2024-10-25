@@ -1,10 +1,9 @@
-
+import { PromptGenerator } from "@/components/app-prompt-generator";
 
 export default function Index() {
   return (
     <>
-      <div>hello world</div>
-      <p>test</p>
+      <PromptGenerator />
     </>
   );
 }
