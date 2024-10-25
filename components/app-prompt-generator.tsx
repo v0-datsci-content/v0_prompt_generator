@@ -52,16 +52,18 @@ export function PromptGenerator() {
   const fontOptions = ['Sans-serif', 'Serif', 'Monospace', 'Display', 'Handwriting']
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(state.message)
-    toast.success('Prompt copied to clipboard!', {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    })
+    if (state.message) {
+      navigator.clipboard.writeText(state.message)
+      toast.success('Prompt copied to clipboard!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+    }
   }
 
   return (
