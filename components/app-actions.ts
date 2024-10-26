@@ -2,10 +2,16 @@
 
 import OpenAI from 'openai'
 import { revalidatePath } from 'next/cache'
+import { createClient } from '@supabase/supabase-js'
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export async function generateAIPrompt(prevState: any, formData: FormData) {
   const category = formData.get('category') as string
@@ -40,6 +46,24 @@ export async function generateAIPrompt(prevState: any, formData: FormData) {
     })
 
     const generatedPrompt = completion.choices[0].message.content
+
+    // Store the input data and generated prompt in Supabase
+    const { data, error } = await supabase
+      .from('prompt_generations')
+      .insert({
+        category,
+        style,
+        mood,
+        palette,
+        fonts,
+        custom_requirement: customRequirement,
+        generated_prompt: generatedPrompt
+      })
+
+    if (error) {
+      console.error('Error inserting data into Supabase:', error)
+      // Note: We're not returning here because we still want to return the generated prompt to the user
+    }
 
     revalidatePath('/')
     return { message: generatedPrompt }
